@@ -1,0 +1,13 @@
+# requirements.txt
+Flask==2.3.3
+Werkzeug==2.3.7
+Jinja2==3.1.2
+itsdangerous==2.1.2
+click==8.1.7
+MarkupSafe==2.1.3
+
+# Opcjonalne rozszerzenia (odkomentuj jeśli potrzebne)
+# Flask-CORS==4.0.0          # CORS support
+# Flask-Limiter==3.5.0       # Rate limiting
+# gunicorn==21.2.0           # Production WSGI server
+# python-dotenv==1.0.0       # Environment variables

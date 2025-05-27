@@ -1,0 +1,11 @@
+{
+  "board_size": 11,
+  "player1": {
+    "type": "human",
+    "name": "Gracz 1"
+  },
+  "player2": {
+    "type": "human",
+    "name": "Gracz 2"
+  }
+}

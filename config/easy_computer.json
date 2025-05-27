@@ -1,0 +1,12 @@
+{
+  "board_size": 7,
+  "player1": {
+    "type": "human",
+    "name": "Człowiek"
+  },
+  "player2": {
+    "type": "computer",
+    "name": "Łatwy Komputer",
+    "difficulty": "easy"
+  }
+}

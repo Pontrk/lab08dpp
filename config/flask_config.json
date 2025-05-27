@@ -1,0 +1,26 @@
+{
+  "development": {
+    "DEBUG": true,
+    "STORAGE_TYPE": "memory",
+    "MAX_GAMES": 50,
+    "RATE_LIMIT_ENABLED": false,
+    "CORS_ENABLED": true
+  },
+  "production": {
+    "DEBUG": false,
+    "STORAGE_TYPE": "file",
+    "STORAGE_DIR": "production_saves",
+    "MAX_GAMES": 1000,
+    "RATE_LIMIT_ENABLED": true,
+    "RATE_LIMIT_PER_MINUTE": 120,
+    "CORS_ENABLED": false,
+    "CORS_ORIGINS": ["https://yourdomain.com"]
+  },
+  "testing": {
+    "DEBUG": true,
+    "TESTING": true,
+    "STORAGE_TYPE": "memory",
+    "MAX_GAMES": 10,
+    "RATE_LIMIT_ENABLED": false
+  }
+}

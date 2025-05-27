@@ -1,0 +1,380 @@
+{% extends "base.html" %}
+
+{% block title %}HEX Game API - Dokumentacja{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron bg-primary text-white p-5 rounded mb-4">
+            <h1 class="display-4"><i class="fas fa-hexagon"></i> HEX Game REST API</h1>
+            <p class="lead">Internetowa implementacja gry HEX z REST API</p>
+            <hr class="my-4">
+            <p>Twórz gry, wykonuj ruchy, zarządzaj sesjami - wszystko przez REST API!</p>
+            <a class="btn btn-light btn-lg" href="#api-docs" role="button">Zobacz dokumentację API</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-play"></i> Szybki start</h5>
+            </div>
+            <div class="card-body">
+                <h6>1. Utwórz nową grę</h6>
+                <pre><code>POST /api/games
+{
+  "board_size": 11,
+  "player1": {"type": "human", "name": "Gracz 1"},
+  "player2": {"type": "computer", "name": "AI", "difficulty": "medium"}
+}</code></pre>
+
+                <h6 class="mt-3">2. Wykonaj ruch</h6>
+                <pre><code>POST /api/games/{game_id}/moves
+{
+  "row": 5,
+  "col": 7
+}</code></pre>
+
+                <h6 class="mt-3">3. Sprawdź stan gry</h6>
+                <pre><code>GET /api/games/{game_id}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-gamepad"></i> Demo gry</h5>
+            </div>
+            <div class="card-body">
+                <div id="demo-section">
+                    <button class="btn btn-primary" onclick="createDemoGame()">
+                        <i class="fas fa-plus"></i> Utwórz demo grę
+                    </button>
+                    <div id="demo-game" style="display: none;">
+                        <h6 class="mt-3">Plansza:</h6>
+                        <div id="demo-board" class="hex-board"></div>
+                        <div class="mt-3">
+                            <button class="btn btn-success btn-sm" onclick="makeDemoMove()">
+                                <i class="fas fa-mouse-pointer"></i> Losowy ruch
+                            </button>
+                            <button class="btn btn-warning btn-sm" onclick="makeComputerMove()">
+                                <i class="fas fa-robot"></i> Ruch AI
+                            </button>
+                            <button class="btn btn-info btn-sm" onclick="refreshDemo()">
+                                <i class="fas fa-sync"></i> Odśwież
+                            </button>
+                        </div>
+                        <div id="demo-info" class="mt-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4" id="api-docs">
+    <div class="col-md-12">
+        <h2><i class="fas fa-book"></i> Dokumentacja API</h2>
+
+        <div class="api-endpoint method-GET">
+            <h5><span class="badge bg-success">GET</span> /api/health</h5>
+            <p>Health check serwera</p>
+            <small>Zwraca status serwera i podstawowe informacje o konfiguracji</small>
+        </div>
+
+        <div class="api-endpoint method-POST">
+            <h5><span class="badge bg-primary">POST</span> /api/games</h5>
+            <p>Tworzy nową grę</p>
+            <pre><code>{
+  "board_size": 11,
+  "player1": {"type": "human", "name": "Gracz 1"},
+  "player2": {"type": "computer", "name": "AI", "difficulty": "medium"}
+}</code></pre>
+        </div>
+
+        <div class="api-endpoint method-GET">
+            <h5><span class="badge bg-success">GET</span> /api/games</h5>
+            <p>Lista wszystkich gier</p>
+            <small>Zwraca listę aktywnych gier z podstawowymi informacjami</small>
+        </div>
+
+        <div class="api-endpoint method-GET">
+            <h5><span class="badge bg-success">GET</span> /api/games/{game_id}</h5>
+            <p>Pobiera stan konkretnej gry</p>
+            <small>Zwraca pełny stan gry, planszę, graczy i statystyki</small>
+        </div>
+
+        <div class="api-endpoint method-POST">
+            <h5><span class="badge bg-primary">POST</span> /api/games/{game_id}/moves</h5>
+            <p>Wykonuje ruch w grze</p>
+            <pre><code>{
+  "row": 5,
+  "col": 7
+}</code></pre>
+        </div>
+
+        <div class="api-endpoint method-POST">
+            <h5><span class="badge bg-primary">POST</span> /api/games/{game_id}/moves/computer</h5>
+            <p>Wykonuje automatyczny ruch komputera</p>
+            <small>Jeśli aktualny gracz to AI, wykona automatyczny ruch</small>
+        </div>
+
+        <div class="api-endpoint method-GET">
+            <h5><span class="badge bg-success">GET</span> /api/games/{game_id}/board</h5>
+            <p>Pobiera wizualizację planszy</p>
+            <small>Zwraca surową planszę i jej wizualną reprezentację</small>
+        </div>
+
+        <div class="api-endpoint method-GET">
+            <h5><span class="badge bg-success">GET</span> /api/games/{game_id}/stats</h5>
+            <p>Statystyki gry</p>
+            <small>Czas ruchów, średnie, liczba ruchów itp.</small>
+        </div>
+
+        <div class="api-endpoint method-POST">
+            <h5><span class="badge bg-primary">POST</span> /api/games/{game_id}/save</h5>
+            <p>Zapisuje grę do pliku</p>
+            <pre><code>{
+  "filename": "my_game.json"
+}</code></pre>
+        </div>
+
+        <div class="api-endpoint method-POST">
+            <h5><span class="badge bg-primary">POST</span> /api/games/load</h5>
+            <p>Wczytuje grę z pliku</p>
+            <pre><code>{
+  "filename": "my_game.json"
+}</code></pre>
+        </div>
+
+        <div class="api-endpoint method-DELETE">
+            <h5><span class="badge bg-danger">DELETE</span> /api/games/{game_id}</h5>
+            <p>Usuwa grę</p>
+            <small>Usuwa grę z pamięci i storage</small>
+        </div>
+
+        <div class="api-endpoint method-GET">
+            <h5><span class="badge bg-success">GET</span> /api/stats</h5>
+            <p>Globalne statystyki</p>
+            <small>Statystyki wszystkich gier, wydajność serwera</small>
+        </div>
+
+        <div class="api-endpoint method-GET">
+            <h5><span class="badge bg-success">GET</span> /api/config</h5>
+            <p>Aktualna konfiguracja serwera</p>
+        </div>
+
+        <div class="api-endpoint method-POST">
+            <h5><span class="badge bg-primary">POST</span> /api/config</h5>
+            <p>Aktualizuje konfigurację (w przyszłych wersjach)</p>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h5><i class="fas fa-info-circle"></i> Przykłady użycia</h5>
+            </div>
+            <div class="card-body">
+                <h6>Curl Examples:</h6>
+                <pre><code># Tworzenie gry
+curl -X POST http://localhost:5000/api/games \
+  -H "Content-Type: application/json" \
+  -d '{"board_size": 7, "player1": {"type": "human", "name": "Jan"}, "player2": {"type": "computer", "difficulty": "easy"}}'
+
+# Wykonanie ruchu
+curl -X POST http://localhost:5000/api/games/{game_id}/moves \
+  -H "Content-Type: application/json" \
+  -d '{"row": 3, "col": 4}'
+
+# Pobranie stanu gry
+curl http://localhost:5000/api/games/{game_id}</code></pre>
+
+                <h6 class="mt-3">JavaScript Examples:</h6>
+                <pre><code>// Tworzenie gry
+const response = await fetch('/api/games', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    board_size: 11,
+    player1: { type: 'human', name: 'Gracz 1' },
+    player2: { type: 'computer', name: 'AI', difficulty: 'hard' }
+  })
+});
+const game = await response.json();</code></pre>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentGameId = null;
+
+async function createDemoGame() {
+    try {
+        const response = await axios.post('/api/games', {
+            board_size: 5,
+            player1: { type: 'human', name: 'Demo Player' },
+            player2: { type: 'computer', name: 'Demo AI', difficulty: 'easy' }
+        });
+        
+        currentGameId = response.data.game_id;
+        document.getElementById('demo-game').style.display = 'block';
+        await refreshDemo();
+    } catch (error) {
+        alert('Błąd tworzenia gry: ' + (error.response?.data?.error || error.message));
+    }
+}
+
+async function refreshDemo() {
+    if (!currentGameId) return;
+    
+    try {
+        const response = await axios.get(`/api/games/${currentGameId}/board`);
+        const boardData = response.data;
+        
+        renderBoard(boardData);
+        updateGameInfo(boardData);
+    } catch (error) {
+        alert('Błąd odświeżania: ' + (error.response?.data?.error || error.message));
+    }
+}
+
+async function makeDemoMove() {
+    if (!currentGameId) return;
+    
+    try {
+        // Pobierz dostępne pola
+        const boardResponse = await axios.get(`/api/games/${currentGameId}/board`);
+        const emptyCells = boardResponse.data.empty_cells;
+        
+        if (emptyCells.length === 0) {
+            alert('Brak dostępnych ruchów!');
+            return;
+        }
+        
+        // Losowy ruch
+        const randomCell = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+        
+        const response = await axios.post(`/api/games/${currentGameId}/moves`, {
+            row: randomCell[0],
+            col: randomCell[1]
+        });
+        
+        await refreshDemo();
+        
+        if (response.data.game_finished) {
+            alert(`Gra zakończona! Zwycięzca: Gracz ${response.data.winner}`);
+        }
+    } catch (error) {
+        alert('Błąd ruchu: ' + (error.response?.data?.error || error.message));
+    }
+}
+
+async function makeComputerMove() {
+    if (!currentGameId) return;
+    
+    try {
+        const response = await axios.post(`/api/games/${currentGameId}/moves/computer`);
+        await refreshDemo();
+        
+        if (response.data.game_finished) {
+            alert(`Gra zakończona! Zwycięzca: Gracz ${response.data.winner}`);
+        }
+    } catch (error) {
+        alert('Błąd ruchu AI: ' + (error.response?.data?.error || error.message));
+    }
+}
+
+function renderBoard(boardData) {
+    const boardDiv = document.getElementById('demo-board');
+    const board = boardData.board_display;
+    const size = board.length;
+    
+    let html = '<div class="hex-borders">';
+    
+    // Górna krawędź (Gracz 1)
+    html += '<div class="border-top">GRACZ 1 (●) - łączy górę z dołem</div>';
+    html += '<div class="border-left">GRACZ 2 (○)</div>';
+    html += '<div class="border-right">GRACZ 2 (○)</div>';
+    
+    // Numeracja kolumn wyrównana z pierwszym rzędem
+    html += '<div style="margin-bottom: 10px; color: #666; text-align: left;">';
+    
+    // Dodaj przestrzeń równą numerowi rzędu + margin
+    html += '<span style="display: inline-block; width: 43px;"></span>'; // 35px + 8px margin-right
+    
+    // Numeracja kolumn 
+    for (let col = 0; col < size; col++) {
+        html += `<span style="display: inline-block; width: 35px; text-align: center; font-size: 12px; color: #999;">${col + 1}</span>`;
+    }
+    html += '</div>';
+    
+    // Wiersze planszy z wcięciami (efekt rombu)
+    for (let row = 0; row < board.length; row++) {
+        html += '<div class="hex-row">';
+        
+        // Numer wiersza - wyrównany do prawej
+        html += `<span class="row-number">${row + 1}</span>`;
+        
+        // Wcięcie dla efektu rombu - każdy rząd przesunięty
+        const indent = '&nbsp;'.repeat(row * 3);
+        html += indent;
+        
+        // Pola w wierszu
+        for (let col = 0; col < board[row].length; col++) {
+            const cell = board[row][col];
+            let cellClass = 'hex-cell';
+            if (cell === '●') cellClass += ' player1';
+            if (cell === '○') cellClass += ' player2';
+            
+            html += `<span class="${cellClass}" onclick="makeMove(${row}, ${col})" title="Rząd ${row + 1}, Kolumna ${col + 1}">${cell}</span>`;
+        }
+        html += '</div>';
+    }
+    
+    // Dolna krawędź (Gracz 1)
+    html += '<div class="border-bottom">GRACZ 1 (●) - łączy górę z dołem</div>';
+    html += '</div>';
+    
+    boardDiv.innerHTML = html;
+}
+
+function updateGameInfo(boardData) {
+    const infoDiv = document.getElementById('demo-info');
+    infoDiv.innerHTML = `
+        <small>
+            <strong>Aktualny gracz:</strong> ${boardData.current_player} | 
+            <strong>Stan gry:</strong> ${boardData.game_state} |
+            <strong>Game ID:</strong> ${currentGameId}
+        </small>
+    `;
+}
+
+async function makeMove(row, col) {
+    if (!currentGameId) return;
+    
+    try {
+        const response = await axios.post(`/api/games/${currentGameId}/moves`, {
+            row: row,
+            col: col
+        });
+        
+        await refreshDemo();
+        
+        if (response.data.game_finished) {
+            alert(`Gra zakończona! Zwycięzca: Gracz ${response.data.winner}`);
+        }
+    } catch (error) {
+        alert('Błąd ruchu: ' + (error.response?.data?.error || error.message));
+    }
+}
+</script>
+{% endblock %}

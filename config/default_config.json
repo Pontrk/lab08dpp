@@ -1,0 +1,21 @@
+{
+  "board_size": 11,
+  "player1": {
+    "type": "human",
+    "name": "Gracz 1"
+  },
+  "player2": {
+    "type": "computer",
+    "name": "Komputer",
+    "difficulty": "medium"
+  },
+  "ui": {
+    "type": "console",
+    "show_coordinates": true,
+    "show_rules_at_start": false
+  },
+  "game": {
+    "auto_save": false,
+    "save_file": "game_state.json"
+  }
+}
